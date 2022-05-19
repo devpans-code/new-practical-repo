@@ -12,6 +12,9 @@
   text-decoration: none !important;
 }
 
+.form-div {
+  display: -ms-inline-grid;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
