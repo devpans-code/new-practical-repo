@@ -36,7 +36,6 @@ const ProductList = () => {
   const deleteProduct = (id) => {
     if (window.confirm("Are you sure, You want to delete it?")) {
       const updateProductArr = data.filter(product => product.id !== id);
-      console.log("updateProductArr ==>> ", updateProductArr);
       dispatch({
         type: LIST_OF_PRODUCT,
         payload: updateProductArr
@@ -111,7 +110,7 @@ const ProductList = () => {
                 {product.exp_date}
               </TableCell>
               <TableCell component="td" scope="row">
-                <i className='fa fa-pencil' /> &nbsp; &nbsp; <i className='fa fa-trash' onClick={() => deleteProduct(product.id)} />
+                <Link to={`/edit/${product.id}`}><i className='fa fa-pencil' /></Link> &nbsp; &nbsp; <i className='fa fa-trash' onClick={() => deleteProduct(product.id)} />
               </TableCell>
             </TableRow>) : <TableRow>
                 <TableCell colSpan={9}>

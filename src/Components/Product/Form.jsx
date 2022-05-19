@@ -4,7 +4,9 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
+import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import { LIST_OF_PRODUCT } from '../../reducer-store/store/productStore';
 
 const categories = [
@@ -23,6 +25,10 @@ const categories = [
 ];
 
 const ProductForm = () => {
+  const queryPara = useParams();
+  console.log("queryPara ==>> ", queryPara);
+  const [title, setTitle] = useState("Add Product");
+  const [id, setId] = useState('');
   const [name, setName] = useState('');
   const [category, setCategory] = useState('');
   const [expDate, setExpDate] = useState('');
@@ -46,6 +52,27 @@ const ProductForm = () => {
       setFinalPrice(newSellPrice);
     }
   }, [sellPrice, discount])
+
+  useEffect(() => {
+    if (queryPara?.id) {
+      const productInfo = data.filter(product => product.id === parseInt(queryPara.id));
+      if (productInfo.length === 0) {
+        return history.push("/");
+      }
+      setTitle("Update Product");
+      setId(productInfo[0].id);
+      setName(productInfo[0].name);
+      setdescription(productInfo[0].description);
+      setExpDate(productInfo[0].exp_date);
+      setCategory(productInfo[0].category);
+      setCostPrice(productInfo[0].cost_price);
+      setSellPrice(productInfo[0].sell_price);
+      setDicSellPrice(productInfo[0].dic_sell_price);
+      setFinalPrice(productInfo[0].final_price);
+      setDiscount(productInfo[0].discount);
+      console.log("productInfo ==>> ", productInfo);
+    }
+  }, [queryPara])
 
   const submitHandler = (e) => {
     e.preventDefault()
@@ -71,11 +98,26 @@ const ProductForm = () => {
         final_price: finalPrice
       }
 
-      const newProductArr = [...data, productData];
-      dispatch({
-        type: LIST_OF_PRODUCT,
-        payload: newProductArr
-      });
+      if (id !== "") {
+        const newProductArr = data.map(product => {
+          if (product.id === parseInt(id)) {
+            return productData;
+          } else {
+            return product;
+          }
+        });
+        dispatch({
+          type: LIST_OF_PRODUCT,
+          payload: newProductArr
+        });
+      } else {
+        const newProductArr = [...data, productData];
+        dispatch({
+          type: LIST_OF_PRODUCT,
+          payload: newProductArr
+        });
+      }
+
       setTimeout(() => {
         return history.push("/");
       }, 2000);
@@ -88,7 +130,7 @@ const ProductForm = () => {
 
   return (
     <>
-      <h2>Add Product</h2>
+      <h2>{title}</h2>
       <hr />
       <Box
         component="form"
@@ -231,7 +273,8 @@ const ProductForm = () => {
             }
           </Col>
         </Row>
-        <Button type='submit' variant="outlined">Add</Button>
+        <Button type='submit' variant="outlined">{title}</Button>
+        <Link to="/">Back</Link>
       </Box>
     </>
   )
