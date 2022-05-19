@@ -1,35 +1,48 @@
 import { Button, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { LIST_OF_PRODUCT } from '../../reducer-store/store/productStore';
 
-const productsArray = [{
-  name: "I Phone 12",
-  category: "mobile",
-  description: "lorem ipsum lorem ipsum ",
-  exp_date: "12-8-2022",
-  cost_price: "10000",
-  sell_price: "22000",
-  discount: 15,
-  dic_sell_price: "19000",
-  final_price: "19000"
-}, {
-  name: "Ac",
-  category: "electronics",
-  description: "carrie global ac",
-  exp_date: "12-8-2022",
-  cost_price: "30000",
-  sell_price: "50000",
-  discount: 15,
-  dic_sell_price: "42500",
-  final_price: "42500"
-}];
+// const productsArray = [{
+//   id: 1,
+//   name: "I Phone 12",
+//   category: "mobile",
+//   description: "lorem ipsum lorem ipsum ",
+//   exp_date: "12-8-2022",
+//   cost_price: "10000",
+//   sell_price: "22000",
+//   discount: 15,
+//   dic_sell_price: "19000",
+//   final_price: "19000"
+// }, {
+//   id: 2,
+//   name: "Ac",
+//   category: "electronics",
+//   description: "carrie global ac",
+//   exp_date: "12-8-2022",
+//   cost_price: "30000",
+//   sell_price: "50000",
+//   discount: 15,
+//   dic_sell_price: "42500",
+//   final_price: "42500"
+// }];
 
 const ProductList = () => {
   const items = useSelector(state => state.product);
   const { data } = items;
   const dispatch = useDispatch();
+
+  const deleteProduct = (id) => {
+    if (window.confirm("Are you sure, You want to delete it?")) {
+      const updateProductArr = data.filter(product => product.id !== id);
+      console.log("updateProductArr ==>> ", updateProductArr);
+      dispatch({
+        type: LIST_OF_PRODUCT,
+        payload: updateProductArr
+      });
+    }
+  }
 
   return (
     <div>
@@ -98,7 +111,7 @@ const ProductList = () => {
                 {product.exp_date}
               </TableCell>
               <TableCell component="td" scope="row">
-                <i className='fa fa-pencil' /> &nbsp; &nbsp; <i className='fa fa-trash' />
+                <i className='fa fa-pencil' /> &nbsp; &nbsp; <i className='fa fa-trash' onClick={() => deleteProduct(product.id)} />
               </TableCell>
             </TableRow>) : <TableRow>
                 <TableCell colSpan={9}>

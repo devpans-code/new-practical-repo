@@ -59,6 +59,7 @@ const ProductForm = () => {
     ) {
       setIsSubmit(true);
       let productData = {
+        id: Math.floor(Math.random() * 10000) + 1,
         name: name,
         category: category,
         description: description,
