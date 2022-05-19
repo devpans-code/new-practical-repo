@@ -3,6 +3,9 @@ import React from 'react'
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { Row, Col } from "react-bootstrap";
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { LIST_OF_PRODUCT } from '../../reducer-store/store/productStore';
 
 const categories = [
   {
@@ -28,8 +31,12 @@ const ProductForm = () => {
   const [discount, setDiscount] = useState(0);
   const [dicSellPrice, setDicSellPrice] = useState('');
   const [finalPrice, setFinalPrice] = useState('');
-  const [discription, setDiscription] = useState('');
+  const [description, setdescription] = useState('');
   const [isSubmit, setIsSubmit] = useState(false);
+  const items = useSelector(state => state.product);
+  const { data } = items;
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   useEffect(() => {
     if (sellPrice && discount) {
@@ -40,9 +47,43 @@ const ProductForm = () => {
     }
   }, [sellPrice, discount])
 
-  // const submitHandler = () => {
-  //   if ()
-  // }
+  const submitHandler = (e) => {
+    e.preventDefault()
+    if (name !== "" &&
+      description !== "" &&
+      discount !== "" &&
+      costPrice !== "" &&
+      sellPrice !== "" &&
+      category !== "" &&
+      expDate !== ""
+    ) {
+      setIsSubmit(true);
+      let productData = {
+        name: name,
+        category: category,
+        description: description,
+        exp_date: expDate,
+        cost_price: costPrice,
+        sell_price: sellPrice,
+        discount: discount,
+        dic_sell_price: dicSellPrice,
+        final_price: finalPrice
+      }
+
+      const newProductArr = [...data, productData];
+      dispatch({
+        type: LIST_OF_PRODUCT,
+        payload: newProductArr
+      });
+      setTimeout(() => {
+        return history.push("/");
+      }, 2000);
+
+      return;
+    }
+
+    setIsSubmit(false);
+  }
 
   return (
     <>
@@ -55,6 +96,7 @@ const ProductForm = () => {
         }}
         noValidate
         autoComplete="off"
+        onSubmit={submitHandler}
       >
         <Row>
           <Col lg="4" sm="12">
@@ -64,9 +106,10 @@ const ProductForm = () => {
               }}
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.name)}
+              onChange={(e) => setName(e.target.value)}
               id="standard-basic" label="Name" variant="standard"
             />
+            <br />
             {
               !isSubmit && name === "" && "Please enter name"
             }
@@ -90,6 +133,7 @@ const ProductForm = () => {
                 </MenuItem>
               ))}
             </TextField>
+            <br />
             {
               !isSubmit && category === "" && "Please select category"
             }
@@ -103,6 +147,7 @@ const ProductForm = () => {
               onChange={(e) => setExpDate(e.target.value)}
               type="date" id="standard-basic" label="Expiry Date" variant="standard"
             />
+            <br />
             {
               !isSubmit && expDate === "" && "Please select date"
             }
@@ -117,6 +162,7 @@ const ProductForm = () => {
               type="number"
               id="standard-basic" label="Cost price" variant="standard"
             />
+            <br />
             {
               !isSubmit && costPrice === "" && "Please enter cost price"
             }
@@ -131,6 +177,7 @@ const ProductForm = () => {
               onChange={(e) => setSellPrice(e.target.value)}
               id="standard-basic" label="Sell Price" variant="standard"
             />
+            <br />
             {
               !isSubmit && sellPrice === "" && "Please enter sell price"
             }
@@ -145,6 +192,7 @@ const ProductForm = () => {
               onChange={(e) => setDiscount(e.target.value ? (e.target.value) : 0)}
               id="standard-basic" label="Discount" variant="standard"
             />
+            <br />
             {
               !isSubmit && (discount === "" || discount === NaN) && "Please enter valid discount"
             }
@@ -173,11 +221,12 @@ const ProductForm = () => {
               rows={4}
               variant="standard"
               defaultValue="Default Value"
-              value={discription}
-              onChange={(e) => setDiscription(e.target.value)}
+              value={description}
+              onChange={(e) => setdescription(e.target.value)}
             />
+            <br />
             {
-              !isSubmit && discription === "" && "Please enter description"
+              !isSubmit && description === "" && "Please enter description"
             }
           </Col>
         </Row>

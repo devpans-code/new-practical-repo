@@ -27,17 +27,9 @@ const productsArray = [{
 }];
 
 const ProductList = () => {
-  const [products, setProducts] = useState(productsArray);
   const items = useSelector(state => state.product);
   const { data } = items;
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch({
-      type: LIST_OF_PRODUCT,
-      payload: products,
-    });
-  }, [products])
 
   return (
     <div>
@@ -109,7 +101,7 @@ const ProductList = () => {
                 <i className='fa fa-pencil' /> &nbsp; &nbsp; <i className='fa fa-trash' />
               </TableCell>
             </TableRow>) : <TableRow>
-              <TableCell>
+                <TableCell colSpan={9}>
                 No record found
               </TableCell>
             </TableRow>
